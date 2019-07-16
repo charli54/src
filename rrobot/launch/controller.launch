@@ -1,0 +1,27 @@
+<launch>
+
+  <node name="bot" pkg="rrobot" type="simpleRobotController" respawn="false"
+    output="screen" ns="/bot" />
+	
+	
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find rrobot)/config/controller.yaml" command="load"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/bot" args="joint_state_controller diffDrv/cmd_vel"/>
+
+
+  <!-- ********************** CONTROL DU ROBOT *****************-->
+  <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
+    <param name="default_topic" value="/bot/diffDrv/cmd_vel"/>
+  </node>
+
+
+  <!-- convert joint states to TF transforms for rviz, etc
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/rrbot/joint_states" />
+  </node>
+ -->
+</launch>
