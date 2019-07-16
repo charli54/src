@@ -1,0 +1,51 @@
+<launch>
+<!-- TEST ************************************************************
+  <node name="left_encoder_to_pid" pkg="topic_tools" type="transform"
+    args="/r2d2_diff_drive_controller/cmd_vel /messageTest std_msgs/Float64 'm.twist.linear.x'" />
+
+  <node name="right_encoder_to_PID" pkg="topic_tools" type="transform"
+    args="/r2d2_diff_drive_controller/cmd_vel message/messageTest std_msgs/Float64 'm.linear.x'" />
+********************************************************************-->
+
+<!--***** TRANSFORM ODOMETRY FROM ENCODERS TO FLOAT64 FOR PID ******-->
+
+  <node name="left_encoder_to_pid" pkg="topic_tools" type="transform"
+    args="/ard_odo /right_wheel/state std_msgs/Float64 'm.linear.x / 0.06'" />
+
+  <node name="right_encoder_to_PID" pkg="topic_tools" type="transform"
+    args="/ard_odo /left_wheel/state std_msgs/Float64 'm.linear.y / 0.06'" />
+
+
+<!--********************* PID PARAMETERS****************************-->
+
+  <node name="controller" pkg="pid" type="controller" ns="left_wheel" output="screen" >
+      <param name="Kp" value="4.0" />
+      <param name="Ki" value="0.1" />
+      <param name="Kd" value="0.05" />
+      <param name="upper_limit" value="10" />
+      <param name="lower_limit" value="-10" />
+      <param name="windup_limit" value="10" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+      <remap from="setpoint" to="/left_wheel_setpoint" />
+  </node>
+
+  <node name="controller" pkg="pid" type="controller" ns="right_wheel" output="screen" >
+      <param name="Kp" value="5.0" />
+      <param name="Ki" value="0.0" />
+      <param name="Kd" value="0.1" />
+      <param name="upper_limit" value="10" />
+      <param name="lower_limit" value="-10" />
+      <param name="windup_limit" value="10" />
+      <param name="max_loop_frequency" value="100.0" />
+      <param name="min_loop_frequency" value="100.0" />
+      <remap from="setpoint" to="/right_wheel_setpoint" />
+  </node>
+
+<!-- rqt_plot is a resource hog, so if you're seeing high CPU usage, don't launch it  -->
+    <node name="rqt_plot" pkg="rqt_plot" type="rqt_plot"
+    args="/right_wheel/control_effort/data /right_wheel/state/data /left_wheel_setpoint
+    /left_wheel/control_effort/data /left_wheel/state/data /setpoint/data /right_wheel_setpoint" />
+
+	
+</launch>

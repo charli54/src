@@ -1,0 +1,3 @@
+type: "gazebo_ros_control/pid_gains"
+  base_to_roue_gauche: {p: 1.0, i: 0.0, d: 1.0}
+  base_to_roue_gauche: {p: 1.0, i: 0.0, d: 1.0}
