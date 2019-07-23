@@ -41,6 +41,8 @@ public:
 
   void read(){
     //ROS_INFO_STREAM("Commands for joints: " << cmd_[0] << ", " << cmd_[1]);
+    pos_[0] = 5;
+    pos_[1] = 5;
     
   }
 
@@ -49,9 +51,9 @@ public:
     //ROS_INFO_STREAM("Commands for joints: " << vel_[0] << ", " << vel_[1]);
     double interval = t.toSec() - lastTime_.toSec();
     double deltaRoueDroite = cmd_[0] * interval;
+    //pos_[0] += deltaRoueDroite;
+    //pos_[1] += cmd_[1] * interval;
 
-    pos_[0] += deltaRoueDroite;
-    pos_[1] += cmd_[1] * interval;
     msg.linear.x = cmd_[0];
     msg.linear.y = cmd_[1];
     pub.publish(msg);
@@ -68,8 +70,19 @@ private:
   double pos_[2] = {0,0};
   double vel_[2];
   double eff_[2];
+  double _wheel_angle[2];
   ros::NodeHandle nh;
   geometry_msgs::Twist msg;
   ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("ard_cmd_vel", 1000);
+  ros::Subscriber sub_odo = nh.subscribe("ard/odo", 1000, getOdoFromEncoder);
 
+  void getOdoFromEncoder(const geometry_msgs::Twist::ConstPtr& msg){
+    //Store wheels velocity inside golbal variables
+    R_spd = msg->linear.x;
+    L_spd = msg->linear.y;
+
+    //Rise a flag to tell that message has been received 
+    publishData = 1;
+  }
+  
 };
