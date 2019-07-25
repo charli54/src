@@ -6,7 +6,7 @@ int main(int argc, char** argv){
   ros::NodeHandle n;
 
 
-  ros::Rate rate(100);
+  ros::Rate rate(10);
 
   tf::TransformBroadcaster broadcaster;
 

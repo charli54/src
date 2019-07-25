@@ -9,13 +9,22 @@ int main(int argc, char** argv){
   ros::Publisher odom_pub = n.advertise<nav_msgs::Odometry>("odom", 50);
   tf::TransformBroadcaster odom_broadcaster;
 
+  double vR = 0.1;
+  double vL = 0.12;
+
+  double v = (vR + vL)/2;
+  
+
   double x = 0.0;
   double y = 0.0;
   double th = 0.0;
 
-  double vx = 0.1;
-  double vy = -0.1;
-  double vth = 0.1;
+  //double vx = 0.1;
+  //double vy = -0.1;
+  double vx = v * cos(th);
+  double vy = v * sin(th);
+  //double vth = 0.1;
+  double vth = (vR - vL)/0.25;
 
   ros::Time current_time, last_time;
   current_time = ros::Time::now();
