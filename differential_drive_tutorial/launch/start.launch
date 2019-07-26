@@ -4,6 +4,7 @@
 	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
 
 	<rosparam file="$(find differential_drive_tutorial)/config/differential_drive.yaml" command="load"/>
+	<!--<rosparam file="$(find differential_drive_tutorial)/config/pid.yaml" command="load"/>-->
 	
 
 	<node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
@@ -15,8 +16,18 @@
 	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" 
 		args="sample_robot_diff_drv"/>
 	
+	<!--<node name="controller_spawner"
+        pkg="controller_manager"
+        type="spawner" 
+        respawn="false"
+        output="screen"
+        ns="/robot_PID" 
+        args="joint_state_controller rightWheel_effort_controller leftWheel_effort_controller"/>-->
+
 	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" /> 
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />   
+
+	<remap from="/ard_cmd_vel" to="/arduino/cmd_vel"/>
 
 	<node name="rviz" pkg="rviz" type="rviz" />
 

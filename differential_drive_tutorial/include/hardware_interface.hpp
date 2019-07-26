@@ -35,6 +35,7 @@ public:
    registerInterface(&jnt_pos_interface);
    registerInterface(&jnt_vel_interface);
 
+   odo_sub = nh.subscribe("ard_odo", 1, &MyRobot::getOdometryFromWheelEncoders, this);
 
   }
 
@@ -43,18 +44,29 @@ public:
   ros::Duration getPeriod() const {return ros::Duration(0.01);}
 
 
-  void read(){
+  void read(ros::Time t){
     //ROS_INFO_STREAM("Commands for joints: " << cmd_[0] << ", " << cmd_[1]);
-    pos_[0] = 5;
-    pos_[1] = 5;
+  	double interval = t.toSec() - lastTime_.toSec();
+
+    vel_[0] = wheelLinearVelocity[0];
+    vel_[1] = wheelLinearVelocity[1];
+
+    /*double v = (wheelLinearVelocity[0] + wheelLinearVelocity[1])/2;
+  	double vx = v * cos(th);
+  	double vy = v * sin(th);*/
+
+    pos_[0] += (wheelLinearVelocity[0] / 0.0695) * interval;
+    pos_[1] += (wheelLinearVelocity[1] / 0.0695) * interval;
+
+    lastTime_ = ros::Time::now();
     
   }
 
   void write(ros::Time t){
     //Update pos_ and vel_
     //ROS_INFO_STREAM("Commands for joints: " << vel_[0] << ", " << vel_[1]);
-    double interval = t.toSec() - lastTime_.toSec();
-    double deltaRoueDroite = cmd_[0] * interval;
+    //double interval = t.toSec() - lastTime_.toSec();
+    //double deltaRoueDroite = cmd_[0] * interval;
     //pos_[0] += deltaRoueDroite;
     //pos_[1] += cmd_[1] * interval;
 
@@ -63,7 +75,7 @@ public:
     msg.linear.x = cmd_[0];
     msg.linear.y = cmd_[1];
     pub.publish(msg);
-    lastTime_ = ros::Time::now();
+    //lastTime_ = ros::Time::now();
 
 
   }
@@ -79,12 +91,17 @@ private:
   double pos_[2] = {0,0};
   double vel_[2];
   double eff_[2];
-  double _wheel_angle[2];
+
+  double wheelLinearVelocity[2];
+
   ros::NodeHandle nh;
   geometry_msgs::Twist msg;
   ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("ard_cmd_vel", 1000);
 
+  ros::Subscriber odo_sub;
 
-
-  
+  void getOdometryFromWheelEncoders(const geometry_msgs::Twist& odo_msg){
+  	wheelLinearVelocity[0] = odo_msg.linear.x;
+  	wheelLinearVelocity[1] = odo_msg.linear.y;
+  }
 };
