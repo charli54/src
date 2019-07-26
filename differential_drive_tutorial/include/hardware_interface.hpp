@@ -2,6 +2,10 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
 #include <geometry_msgs/Twist.h>
+
+    double R_spd = 0.0;
+    double L_spd = 0.0;
+
 class MyRobot : public hardware_interface::RobotHW
 {
 public:
@@ -54,11 +58,16 @@ public:
     //pos_[0] += deltaRoueDroite;
     //pos_[1] += cmd_[1] * interval;
 
+
+
     msg.linear.x = cmd_[0];
     msg.linear.y = cmd_[1];
     pub.publish(msg);
     lastTime_ = ros::Time::now();
+
+
   }
+
 
 private:
   hardware_interface::JointStateInterface jnt_state_interface;
@@ -74,15 +83,8 @@ private:
   ros::NodeHandle nh;
   geometry_msgs::Twist msg;
   ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("ard_cmd_vel", 1000);
-  ros::Subscriber sub_odo = nh.subscribe("ard/odo", 1000, getOdoFromEncoder);
 
-  void getOdoFromEncoder(const geometry_msgs::Twist::ConstPtr& msg){
-    //Store wheels velocity inside golbal variables
-    R_spd = msg->linear.x;
-    L_spd = msg->linear.y;
 
-    //Rise a flag to tell that message has been received 
-    publishData = 1;
-  }
+
   
 };

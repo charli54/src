@@ -135,9 +135,9 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(broadcast_laser_tf_node src/broadcast_laser_tf.cpp)
-
+add_executable(broadcast_imu_tf_node src/broadcast_imu.cpp)
 ## Rename C++ executable without prefix
-## The above recommended prefix causes long target names, the following renames the
+## The above recobroadcast_imu.cppmmended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
@@ -151,6 +151,9 @@ target_link_libraries(broadcast_laser_tf_node
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(broadcast_imu_tf_node
+  ${catkin_LIBRARIES}
+)
 #############
 ## Install ##
 #############
