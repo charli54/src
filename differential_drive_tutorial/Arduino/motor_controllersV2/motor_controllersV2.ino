@@ -173,12 +173,6 @@ if(interval >= 10){
     directionLeft = 1;
   }
   
-  if (Output_l > 255) {
-    Output_l = 255;
-  }
-  else if (Output_l < -255) {
-    Output_l = -255;
-  }
 
   //--------------FOR THE RIGHT MOTOR----------------------
   if (Output_r < 0) {
@@ -190,12 +184,6 @@ if(interval >= 10){
     directionRight = 1;
   }
   
-  if (Output_r > 255) {
-    Output_r = 255;
-  }
-  else if (Output_r < -255) {
-    Output_r = -255;
-  }
   
   analogWrite(MOTOR_LEFT_PWM, int(directionLeft * Output_l));
   analogWrite(MOTOR_RIGHT_PWM, int(directionRight * Output_r));
