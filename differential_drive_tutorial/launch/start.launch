@@ -29,6 +29,6 @@
 
 	<remap from="/ard_cmd_vel" to="/arduino/cmd_vel"/>
 
-	<node name="rviz" pkg="rviz" type="rviz" />
+	<!--<node name="rviz" pkg="rviz" type="rviz" />-->
 
 </launch>

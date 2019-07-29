@@ -47,16 +47,16 @@ public:
   void read(ros::Time t){
     //ROS_INFO_STREAM("Commands for joints: " << cmd_[0] << ", " << cmd_[1]);
   	double interval = t.toSec() - lastTime_.toSec();
-
-    vel_[0] = wheelLinearVelocity[0];
-    vel_[1] = wheelLinearVelocity[1];
+	//vel_[0] = 0.05;
+    //vel_[0] = wheelLinearVelocity[0];
+    //vel_[1] = wheelLinearVelocity[1];
 
     /*double v = (wheelLinearVelocity[0] + wheelLinearVelocity[1])/2;
   	double vx = v * cos(th);
   	double vy = v * sin(th);*/
-
-    pos_[0] += (wheelLinearVelocity[0] / 0.0695) * interval;
-    pos_[1] += (wheelLinearVelocity[1] / 0.0695) * interval;
+    //pos_[0] += 0.05 * interval;
+    //pos_[0] += (wheelLinearVelocity[0] / 0.0695) * interval;
+    //pos_[1] += (wheelLinearVelocity[1] / 0.0695) * interval;
 
     lastTime_ = ros::Time::now();
     
