@@ -1,5 +1,6 @@
 <launch>
 	<arg name="model" default="$(find differential_drive_tutorial)/urdf/model_1.urdf.xacro"/>
+	<arg name="rvizconfig" default="$(find differential_drive_tutorial)/rviz/rviz_conf.rviz" />
 
 	<param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
 
@@ -29,6 +30,6 @@
 
 	<remap from="/ard_cmd_vel" to="/arduino/cmd_vel"/>
 
-	<!--<node name="rviz" pkg="rviz" type="rviz" />-->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
 
 </launch>

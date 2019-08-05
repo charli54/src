@@ -11,6 +11,7 @@
 			<param name="angle_compensate"    	type="bool"   value="true"/>
 		</node>
 
+		<include file="$(find differential_drive_tutorial)/launch/arduino_serial_communication.launch"/>
 		<include file="$(find differential_drive_tutorial)/launch/start.launch"/>
 
 </launch>

@@ -2,6 +2,7 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/robot_hw.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/TwistStamped.h>
 
     double R_spd = 0.0;
     double L_spd = 0.0;
@@ -46,11 +47,15 @@ public:
 
   void read(ros::Time t){
     //ROS_INFO_STREAM("Commands for joints: " << cmd_[0] << ", " << cmd_[1]);
-  	double interval = t.toSec() - lastTime_.toSec();
+  	//double interval = t.toSec() - lastTime_.toSec();
 	//vel_[0] = 0.05;
-    //vel_[0] = wheelLinearVelocity[0];
-    //vel_[1] = wheelLinearVelocity[1];
-
+    double interval = receiveTime_.toSec() - lastTime_.toSec();
+    lastTime_ = receiveTime_;
+    
+    vel_[0] = wheelAngularVelocity[0];
+    vel_[1] = wheelAngularVelocity[1];
+    pos_[0] += wheelAngularVelocity[0] * interval;
+    pos_[1] += wheelAngularVelocity[1] * interval;
     /*double v = (wheelLinearVelocity[0] + wheelLinearVelocity[1])/2;
   	double vx = v * cos(th);
   	double vy = v * sin(th);*/
@@ -58,7 +63,7 @@ public:
     //pos_[0] += (wheelLinearVelocity[0] / 0.0695) * interval;
     //pos_[1] += (wheelLinearVelocity[1] / 0.0695) * interval;
 
-    lastTime_ = ros::Time::now();
+    
     
   }
 
@@ -87,12 +92,14 @@ private:
   hardware_interface::VelocityJointInterface jnt_vel_interface;
 
   ros::Time lastTime_ = ros::Time::now();
+  ros::Time receiveTime_;
   double cmd_[2];
   double pos_[2] = {0,0};
   double vel_[2];
   double eff_[2];
 
   double wheelLinearVelocity[2];
+  double wheelAngularVelocity[2];
 
   ros::NodeHandle nh;
   geometry_msgs::Twist msg;
@@ -100,8 +107,9 @@ private:
 
   ros::Subscriber odo_sub;
 
-  void getOdometryFromWheelEncoders(const geometry_msgs::Twist& odo_msg){
-  	wheelLinearVelocity[0] = odo_msg.linear.x;
-  	wheelLinearVelocity[1] = odo_msg.linear.y;
+  void getOdometryFromWheelEncoders(const geometry_msgs::TwistStamped& odo_msg){
+  	receiveTime_ = odo_msg.header.stamp;
+    wheelAngularVelocity[0] = odo_msg.twist.linear.x;
+  	wheelAngularVelocity[1] = odo_msg.twist.linear.y;
   }
 };
